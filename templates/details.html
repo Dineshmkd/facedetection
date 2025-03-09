@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition Attendance</title>
+</head>
+<body>
+    <form action="/">
+        <button type="submit" onclick="stopCamera()">Back to home</button>
+    </form>
+
+    <div id="cameraContainer" style="display: block;">
+        <img id="videoFeed" src="{{ url_for('video_feed') }}">
+        <button type="button" onclick="submitForm()">Capture & Submit</button>
+        <button type="button" onclick="stopCamera()">Cancel</button>
+    </div>
+
+    <ul id="valuesList">
+    </ul>
+
+    <script>
+    function submitForm() {
+        stopCamera();
+
+        fetch('/attendance')  // GET request
+    .then(response => response.json())
+    .then(data => {
+        if (data.values.length > 0) {
+            alert("Attendance Successful");
+
+            let valuesList = document.getElementById("valuesList");
+            valuesList.innerHTML = ""; // Clear existing list
+
+            data.values.forEach(value => {
+                let li = document.createElement("li");
+                li.textContent = value;
+                valuesList.appendChild(li);
+            });
+        } else {
+            alert("Face not recognized!");
+        }
+    }).catch(error => console.error("Error:", error));
+    }
+
+    function stopCamera() {
+        fetch('/stop_camera', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                document.getElementById('cameraContainer').style.display = 'none';
+                document.getElementById("videoFeed").innerHTML= "";
+            });
+    }
+    </script>
+</body>
+</html>
