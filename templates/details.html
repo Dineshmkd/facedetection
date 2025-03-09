@@ -92,7 +92,7 @@
 <body>
 
     <div class="main-container">
-        <h1>Attendance</h1>
+        <h1>Student Details</h1>
 
         <div id="cameraContainer">
             <img id="videoFeed" src="{{ url_for('video_feed') }}">
@@ -109,11 +109,11 @@
     function submitForm() {
         stopCamera();
 
-        fetch('/attendance')
+        fetch('/record')
         .then(response => response.json())
         .then(data => {
             if (data.values.length > 0) {
-                alert("Attendance Successful");
+                alert("Student found");
 
                 let valuesList = document.getElementById("valuesList");
                 valuesList.innerHTML = ""; // Clear existing list

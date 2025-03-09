@@ -71,9 +71,9 @@ def register():
         
     return jsonify({"message": ''})
 
-@app.route('/attendance', methods=['GET'])
+@app.route('/record', methods=['GET'])
 def attendance():
-    print("inside attandenace")
+    print("inside record")
     cam = cv2.VideoCapture(0)
     ret, frame = cam.read()
     cam.release()
@@ -83,7 +83,7 @@ def attendance():
         if student_name and student_name != "Unknown":
             print(student_name)
             values = database.get_student_id_by_name(student_name.split("_")[0])
-            database.mark_attendance(student_name.split("_")[0])
+            print(values)
             return jsonify({"values": values})
     return jsonify({"values": []}) 
 

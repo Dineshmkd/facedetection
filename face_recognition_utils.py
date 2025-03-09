@@ -26,7 +26,7 @@ def encode_faces():
 
     print(image_dir)
     # Load existing encodings if available
-    if os.path.exists("models/face_encodings.pkl"):
+    if os.path.exists("models/face_encodings.pkl") and os.path.getsize("models/face_encodings.pkl") > 0:
         with open("models/face_encodings.pkl", "rb") as f:
             known_face_encodings, known_face_names = pickle.load(f)
 
@@ -38,9 +38,12 @@ def encode_faces():
         # Load and encode face
         image = face_recognition.load_image_file(image_path)
         encoding = face_recognition.face_encodings(image)
+        print(encoding)
 
         if len(encoding) > 0:
             new_encoding = encoding[0]
+            
+            print(new_encoding)
 
             # Check if the new face is already encoded
             for existing_encoding in known_face_encodings:
@@ -63,6 +66,10 @@ def recognize_face(frame):
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     face_locations = face_recognition.face_locations(rgb_frame)
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+
+    print(face_locations)
+    print(face_encodings)
+    print(known_face_encodings)
 
     for face_encoding in face_encodings:
         matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
