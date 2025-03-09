@@ -2,27 +2,120 @@
 <html>
 <head>
     <title>Face Recognition Attendance</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .main-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.4);
+            text-transform: uppercase;
+            outline: none;
+            flex: 1;
+            margin: 5px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(255, 75, 43, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(45deg, #6c757d, #343a40);
+        }
+
+        #cameraContainer {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #videoFeed {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
 
-    <form action="/">
-        <button type="submit" onclick="stopCamera()">Back to home</button>
-    </form>
-    
-    <form id="registerForm">
-        <input type="text" id="name" name="name" placeholder="Enter Name" required>
-        <input type="text" id="roll_number" name="roll_number" placeholder="Enter Roll Number" required>
-        <button type="button" onclick="validateAndStartCamera()">Register</button> 
-    </form>
-    
-    <div id="cameraContainer" style="display: none;">
-        <img id="videoFeed" src="">
-        <button type="button" onclick="submitForm()">Capture & Submit</button>
-        <button type="button" onclick="stopCamera()">Cancel</button>
+    <div class="main-container">
+        <h1>Register Student</h1>
+
+        <div class="form-container">
+            <form id="registerForm">
+                <input class="input-field" type="text" id="name" name="name" placeholder="Enter Name" required>
+                <input class="input-field" type="text" id="roll_number" name="roll_number" placeholder="Enter Roll Number" required>
+                
+                <div class="button-group">
+                    <button class="submit-btn" type="button" onclick="validateAndStartCamera()">Register</button>
+                    <button class="submit-btn cancel-btn" type="button" onclick="navigateHome()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="cameraContainer">
+            <img id="videoFeed" src="">
+            <button class="submit-btn cancel-btn" type="button" onclick="stopCamera()">Cancel</button>
+            <button class="submit-btn" type="button" onclick="submitForm()">Capture & Submit</button>
+        </div>
     </div>
 
     <script>
-
     function validateAndStartCamera() {
         let name = document.getElementById("name").value;
         let rollNumber = document.getElementById("roll_number").value;
@@ -32,16 +125,13 @@
             return false;
         }
 
-        // Show camera feed only if validation is passed
         document.getElementById("cameraContainer").style.display = "block";
         document.getElementById("videoFeed").src = "/video_feed";
     }
 
     function submitForm() {
-        // Stop camera before submitting form
         stopCamera();
 
-        // Submit form data manually
         let form = document.getElementById("registerForm");
         let formData = new FormData(form);
 
@@ -49,10 +139,10 @@
             method: 'POST',
             body: formData
         }).then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-        .catch(error => console.error("Error:", error));
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error("Error:", error));
     }
 
     function stopCamera() {
@@ -63,6 +153,10 @@
                 document.getElementById('cameraContainer').style.display = 'none';
                 document.getElementById("videoFeed").innerHTML= "";
             });
+    }
+
+    function navigateHome() {
+        window.location.href = "/";
     }
     </script>
 </body>

@@ -16,12 +16,12 @@ def home():
     
     return render_template('index.html')
 
-@app.route('/naviagateRegister')
-def naviagateRegister():
+@app.route('/navigateRegister')
+def navigateRegister():
     return render_template('register.html')
 
-@app.route('/naviagateDetails')
-def naviagateDetails():
+@app.route('/navigateDetails')
+def navigateDetails():
     return render_template('details.html')
 
 def generate_frames():

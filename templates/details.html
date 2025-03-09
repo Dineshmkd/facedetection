@@ -2,43 +2,133 @@
 <html>
 <head>
     <title>Face Recognition Attendance</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .main-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #cameraContainer {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        #videoFeed {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.4);
+            text-transform: uppercase;
+            outline: none;
+            flex: 1;
+            margin: 5px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(255, 75, 43, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(45deg, #6c757d, #343a40);
+        }
+
+        #valuesList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #valuesList li {
+            background: #f1f1f1;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <form action="/">
-        <button type="submit" onclick="stopCamera()">Back to home</button>
-    </form>
 
-    <div id="cameraContainer" style="display: block;">
-        <img id="videoFeed" src="{{ url_for('video_feed') }}">
-        <button type="button" onclick="submitForm()">Capture & Submit</button>
-        <button type="button" onclick="stopCamera()">Cancel</button>
+    <div class="main-container">
+        <h1>Attendance</h1>
+
+        <div id="cameraContainer">
+            <img id="videoFeed" src="{{ url_for('video_feed') }}">
+            <div class="button-group">
+                <button class="submit-btn" type="button" onclick="submitForm()">Capture & Submit</button>
+                <button class="submit-btn cancel-btn" type="button" onclick="navigateHome()">Cancel</button>
+            </div>
+        </div>
+
+        <ul id="valuesList"></ul>
     </div>
-
-    <ul id="valuesList">
-    </ul>
 
     <script>
     function submitForm() {
         stopCamera();
 
-        fetch('/attendance')  // GET request
-    .then(response => response.json())
-    .then(data => {
-        if (data.values.length > 0) {
-            alert("Attendance Successful");
+        fetch('/attendance')
+        .then(response => response.json())
+        .then(data => {
+            if (data.values.length > 0) {
+                alert("Attendance Successful");
 
-            let valuesList = document.getElementById("valuesList");
-            valuesList.innerHTML = ""; // Clear existing list
+                let valuesList = document.getElementById("valuesList");
+                valuesList.innerHTML = ""; // Clear existing list
 
-            data.values.forEach(value => {
-                let li = document.createElement("li");
-                li.textContent = value;
-                valuesList.appendChild(li);
-            });
-        } else {
-            alert("Face not recognized!");
-        }
-    }).catch(error => console.error("Error:", error));
+                data.values.forEach(value => {
+                    let li = document.createElement("li");
+                    li.textContent = value;
+                    if (typeof value === "string" && !value.includes("static")){
+                        valuesList.appendChild(li);
+                    }                    
+                });
+            } else {
+                alert("Face not recognized!");
+            }
+        }).catch(error => console.error("Error:", error));
     }
 
     function stopCamera() {
@@ -49,6 +139,10 @@
                 document.getElementById('cameraContainer').style.display = 'none';
                 document.getElementById("videoFeed").innerHTML= "";
             });
+    }
+
+    function navigateHome() {
+        window.location.href = "/";
     }
     </script>
 </body>
